@@ -1,13 +1,12 @@
 import Head from "next/head";
-import { useState } from "react";
-import { Box, Button, Flex, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { Box, Button, Flex, FormControl, FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberInput, NumberInputField, Stack, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 import DahboardLayout from "@/components/layouts/DashboardLayout";
 import { DashboardSubHeader } from "@/components/dashboard/header";
 import axios from "axios";
 import { Rupiah } from "@/utils/price";
-import TableComponent from "@/components/table";
 import TableNoPagination from "@/components/table/NoPagination";
 
 const ManageProducts = () => {
@@ -25,7 +24,7 @@ const ManageProducts = () => {
   )
 }
 
-const SearchProducts = ({ products, setProducts, setTotal }: any) => {
+const SearchProducts = ({ products, setProducts, setTotal, finalRef }: any) => {
   const [barcode, setBarcode] = useState<string>('');
 
   const handleSubmit = async (e: any) => {
@@ -76,6 +75,7 @@ const SearchProducts = ({ products, setProducts, setTotal }: any) => {
           py={6}
           onChange={(e) => setBarcode(e.target.value)}
           onKeyUp={handleSubmit}
+          ref={finalRef}
         />
       </InputGroup>
       <Button
@@ -90,36 +90,127 @@ const SearchProducts = ({ products, setProducts, setTotal }: any) => {
   )
 }
 
-const Payment = ({ isOpen, onClose, products, setProducts, total, setTotal }: any) => {
+const Payment = ({ isOpen, onClose, setProducts, total, setTotal, finalRef }: any) => {
+  const toast = useToast();
+
+  const [bayar, setBayar] = useState<number>(0);
+  const [kembalian, setKembalian] = useState<number>(0);
+
+  const initialRef = useRef(null);
+
+  const handleEnterBayar = (e: any) => {
+    if (e.key === 'Enter') {
+      setKembalian((bayar / 15000) - total);
+
+      if (bayar >= total) {
+        return toast({
+          title: "Sukses",
+          description: "Pembayaran Sukses",
+          status: "success",
+          position: "top-right",
+          duration: 5000,
+          isClosable: true
+        });
+      }
+    }
+  }
+
+  const handleDone = () => {
+    setProducts([]);
+    setTotal(0);
+    setKembalian(0);
+    setBayar(0);
+
+    onClose();
+  }
+
+  const handleSubmitBayar = (e: any) => {
+    e.preventDefault();
+
+    setKembalian((bayar / 15000) - total);
+
+    if (bayar >= total) {
+      return toast({
+        title: "Sukses",
+        description: "Pembayaran Sukses",
+        status: "success",
+        position: "top-right",
+        duration: 5000,
+        isClosable: true
+      });
+    }
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      initialFocusRef={initialRef}
+      finalFocusRef={finalRef}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
           Payment
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          bayar
+        <ModalBody as={Stack}
+          spacing={5}
+        >
+          <Stack spacing={0}>
+            <Text>
+              Your Total is:
+            </Text>
+            <Text fontSize={'md'} fontWeight={'medium'}>
+              {Rupiah.format(total * 15000)}
+            </Text>
+          </Stack>
+          <FormControl>
+            <FormLabel>Bayar</FormLabel>
+            <InputGroup>
+              <InputLeftElement>
+                <Text>
+                  Rp
+                </Text>
+              </InputLeftElement>
+              <Input
+                type="number"
+                onChange={(e) => setBayar(parseInt(e.target.value))}
+                onKeyUp={handleEnterBayar}
+                ref={initialRef}
+              />
+            </InputGroup>
+          </FormControl>
+
+          <Stack spacing={0}>
+            <Text>
+              Kembalian
+            </Text>
+            <Text fontSize={'md'} fontWeight={'medium'}>
+              {Rupiah.format(kembalian * 15000)}
+            </Text>
+          </Stack>
         </ModalBody>
 
         <ModalFooter>
           <Button
             colorScheme="red"
             variant='ghost'
-            onClick={onClose}
+            onClick={handleDone}
             mr={3}
+            isDisabled={bayar < total || kembalian < 0}
           >
-            Close
+            Selesai
           </Button>
           <Button
             colorScheme="teal"
+            onClick={handleSubmitBayar}
           >
-            Save
+            Bayar
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   )
 }
 
@@ -128,6 +219,7 @@ export default function CashierPage() {
   const [total, setTotal] = useState<number>(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const finalRef = useRef(null);
 
   return (
     <>
@@ -142,6 +234,7 @@ export default function CashierPage() {
         setProducts={setProducts}
         total={total}
         setTotal={setTotal}
+        finalRef={finalRef}
       />
 
       <DahboardLayout>
@@ -150,6 +243,7 @@ export default function CashierPage() {
           products={products}
           setProducts={setProducts}
           setTotal={setTotal}
+          finalRef={finalRef}
         />
 
         <Flex
@@ -194,6 +288,7 @@ export default function CashierPage() {
               <Button
                 colorScheme="teal"
                 onClick={onOpen}
+                isDisabled={products.length === 0}
               >
                 Bayar
               </Button>
