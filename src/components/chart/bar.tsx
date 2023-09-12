@@ -1,31 +1,9 @@
-import { FinalChartProps } from "@/utils/type/chart";
-
 import { Chart as ChartTS, CategoryScale, LinearScale, PointElement, BarElement, Filler, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
 ChartTS.register(
   CategoryScale, LinearScale, PointElement, BarElement, Filler, Title, Tooltip, Legend
 );
-const options = {
-  plugins: {
-    legend: {
-      position: "top",
-      align: "end",
-      labels: {
-        boxWidth: 7,
-        usePointStyle: true,
-        pointStyle: "circle",
-      },
-    },
-  },
-  elements: {
-    bar: {
-      barPercentage: 1,
-      categoryPercentage: 1,
-    },
-  },
-};
-
 
 const datas = {
   labels: ["January", "February", "March", "April", "May", "June"],
@@ -47,6 +25,6 @@ const datas = {
 
 export default function BarChartComponent({ data, x, y }: { data?: any, x?: number, y?: number }) {
   return (
-    <Bar data={data || datas} options={options} />
+    <Bar data={data || datas} />
   )
 }
