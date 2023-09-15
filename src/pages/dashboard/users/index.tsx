@@ -1,21 +1,17 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
-import { Badge, Button, Flex, Icon, Image, Input, InputGroup, InputLeftElement, Stack, Td, Th, Tr } from "@chakra-ui/react";
-import { MdCalendarViewDay } from "react-icons/md";
-import { SearchIcon } from "@chakra-ui/icons";
-import { BiFilter } from "react-icons/bi";
-import { BsDatabaseFillAdd } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
+import { SearchIcon } from "@chakra-ui/icons";
+import { Button, Flex, Icon, Image, Input, InputGroup, InputLeftElement, Stack, Td, Th, Tr } from "@chakra-ui/react";
+import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
+import { BiFilter } from "react-icons/bi";
 
 import { DashboardHeader, DashboardSubHeader } from "@/components/dashboard/header";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import TableComponent from "@/components/table";
-import { useRouter } from "next/router";
-import { Rupiah } from "@/utils/price";
 
-const ManageProducts = () => {
-  const router = useRouter();
-
+const ManageUsers = () => {
   return (
     <Flex
       py={5}
@@ -23,30 +19,29 @@ const ManageProducts = () => {
       align={'center'}
     >
       <DashboardSubHeader
-        title="Manage Products"
-        description="Create and manage your products."
+        title="Manage Users"
+        description="Create and manage users using this app."
       />
       <Button
         colorScheme="teal"
         gap={3}
-        onClick={() => router.push('/dashboard/products/add')}
       >
-        <Icon as={BsDatabaseFillAdd} />
-        Add Product
+        <Icon as={AiOutlineUserAdd} />
+        Add User
       </Button>
     </Flex>
   )
 }
 
-const SearchProducts = ({ products, setProducts }: any) => {
+const SearchUsers = ({ setUsers }: any) => {
   const handleSearch = async (e: any) => {
     e.preventDefault();
 
     const { value } = e.target;
 
-    const response = await axios.get(`https://dummyjson.com/products/search?q=${value}&limit=10`);
+    const response = await axios.get(`https://dummyjson.com/users/search?q=${value}&limit=10`);
     const { data } = response;
-    setProducts(data.products);
+    setUsers(data.users);
   }
 
   return (
@@ -75,33 +70,34 @@ const SearchProducts = ({ products, setProducts }: any) => {
   )
 }
 
-export default function ProductsPage() {
+
+export default function UsersPage() {
   const router = useRouter();
 
-  const [products, setProducts] = useState<any>();
+  const [users, setUsers] = useState<any>();
   const [skip, setSkip] = useState<number>(0);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await axios.get(`https://dummyjson.com/products?limit=10&skip=${skip}`);
+        const response = await axios.get(`https://dummyjson.com/users?limit=10&skip=${skip}`);
         const { data } = response;
-        setProducts(data.products);
+        setUsers(data.users);
       } catch (error) {
-        setProducts(null);
+        console.log(error);
       }
     }
-    fetchProducts();
+
+    fetchUsers();
 
     return () => {
-      setProducts(null);
+      setUsers(null);
     }
-
   }, [skip]);
 
-  const handleViewProduct = async (id: number) => {
+  const handleViewUser = (id: number) => {
     router.push({
-      pathname: '/dashboard/products/[id]',
+      pathname: "/dashboard/users/[id]",
       query: { id }
     });
   }
@@ -115,50 +111,46 @@ export default function ProductsPage() {
       <DashboardLayout>
         <Stack as="section" spacing={8}>
           <DashboardHeader
-            icon={MdCalendarViewDay}
-            title='Products'
-            description='List of your products and more.'
+            icon={AiOutlineUser}
+            title='Users'
+            description='List of all users using this app.'
           />
 
           <Stack>
-            <ManageProducts />
-            <SearchProducts products={products} setProducts={setProducts} />
+            <ManageUsers />
+            <SearchUsers setUsers={setUsers} />
 
             <TableComponent
-              header={["Thumbnail", "Name", "Brand", "Stock", "Price", "Rating"]}
+              header={["Picture", "Username", "FirstName", "LastName", "Email", "IP Address"]}
               page={skip}
               setPage={setSkip}
-              pagination={products && true}
+              pagination={users && true}
             >
-              {products === null && (
+              {users === null && (
                 <Tr>
                   <Th py={10} colSpan={5} textAlign={'center'}>
                     No Data
                   </Th>
                 </Tr>
               )}
-              {products?.map((product: any, index: number) => {
+              {users?.map((user: any, index: number) => {
                 return (
-                  <Tr key={index} cursor={'pointer'} onClick={() => handleViewProduct(product?.id)}>
+                  <Tr key={index} cursor={'pointer'} onClick={() => handleViewUser(user.id)}>
                     <Td
                       w={'100px'} maxW={'100px'} minW={'100px'}
                       h={'100px'} maxH={'100px'} minH={'100px'}
                     >
                       <Image
-                        src={product?.thumbnail}
-                        alt={product?.name}
+                        src={user?.image}
+                        alt={user?.username}
                         objectFit={'cover'}
                       />
                     </Td>
-                    <Td>{product?.title}</Td>
-                    <Td>{product?.brand}</Td>
-                    <Td>{product?.stock}</Td>
-                    <Td>{Rupiah.format(product?.price * 15000)}</Td>
-                    <Td>
-                      <Badge colorScheme="yellow">
-                        {product?.rating}
-                      </Badge>
-                    </Td>
+                    <Td>{user?.username}</Td>
+                    <Td>{user?.firstName}</Td>
+                    <Td>{user?.lastName}</Td>
+                    <Td>{user?.email}</Td>
+                    <Td>{user?.ip}</Td>
                   </Tr>
                 )
               })}

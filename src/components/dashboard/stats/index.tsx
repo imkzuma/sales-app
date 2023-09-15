@@ -1,5 +1,5 @@
 import StatLineChart from "@/components/chart/StatLine";
-import { Box, Flex, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 
 const datas = [
   { id: 1, label: 'Total Users', value: 6500, increase: true, decrease: false, percent: 23.4 },
@@ -10,33 +10,45 @@ const datas = [
 
 export default function StatsDashboard() {
   return (
-    <Flex gap={3} flexWrap={'wrap'} w='full'>
+    <Grid
+      gridTemplateColumns={'repeat(4,1fr)'}
+      gap={3}
+    >
       {datas.map((item, index) => (
-        <Stat key={index}
-          border={'1px'}
-          borderColor={'gray.300'}
-          h={32}
-          py={5}
-          px={5}
-          rounded={'lg'}
-          bg={'teal.100'}
-          pos='relative'
+        <GridItem key={index}
+          colSpan={{
+            base: 4,
+            md: 2,
+            lg: 1
+          }}
         >
-          <StatLabel>{item.label}</StatLabel>
-          <StatNumber>{item.value}</StatNumber>
-          <StatHelpText>
-            <StatArrow type={item.increase ? 'increase' : 'decrease'} />
-            {item.percent}%
-          </StatHelpText>
-          <Box
-            pos="absolute"
-            right={0}
-            bottom={0}
+
+          <Stat
+            border={'1px'}
+            borderColor={'gray.300'}
+            h={32}
+            py={5}
+            px={5}
+            rounded={'lg'}
+            bg={'teal.100'}
+            pos='relative'
           >
-            <StatLineChart w={200} h={80} />
-          </Box>
-        </Stat>
+            <StatLabel>{item.label}</StatLabel>
+            <StatNumber>{item.value}</StatNumber>
+            <StatHelpText>
+              <StatArrow type={item.increase ? 'increase' : 'decrease'} />
+              {item.percent}%
+            </StatHelpText>
+            <Box
+              pos="absolute"
+              right={0}
+              bottom={0}
+            >
+              <StatLineChart w={200} h={80} />
+            </Box>
+          </Stat>
+        </GridItem>
       ))}
-    </Flex>
+    </Grid>
   )
 }

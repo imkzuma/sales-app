@@ -2,9 +2,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BiSolidHome } from "react-icons/bi";
-import { Box, Button, Divider, Flex, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Grid, GridItem, Stack, useToast } from "@chakra-ui/react";
 
-import DahboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import StatsDashboard from "@/components/dashboard/stats";
 import BarChartComponent from "@/components/chart/bar";
 import LineChartComponent from "@/components/chart/line";
@@ -88,8 +88,11 @@ export default function DashboardPage() {
         <title>Sales App | Dashboard</title>
       </Head>
 
-      <DahboardLayout>
-        <Stack as="section" spacing={8}>
+      <DashboardLayout>
+        <Stack as="section"
+          spacing={8}
+          px={{ base: 3, lg: 0 }}
+        >
           <DashboardHeader
             icon={BiSolidHome}
             title='Dashboard Overview'
@@ -124,14 +127,17 @@ export default function DashboardPage() {
 
           <Divider />
 
-          <Flex gap={5}>
-            <Box w={'50%'}>
+          <Grid
+            gridTemplateColumns={'repeat(2,1fr)'}
+            gap={5}
+          >
+            <GridItem colSpan={{ base: 2, md: 1 }}>
               <MostPopularProducts />
-            </Box>
-            <Box w={'50%'}>
+            </GridItem>
+            <GridItem colSpan={{ base: 2, md: 1 }}>
               <BestSellers />
-            </Box>
-          </Flex>
+            </GridItem>
+          </Grid>
 
           <Stack
             align={'start'}
@@ -157,7 +163,7 @@ export default function DashboardPage() {
           </Stack>
 
         </Stack>
-      </DahboardLayout>
+      </DashboardLayout>
     </>
   )
 }

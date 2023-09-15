@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Flex, FormControl, FormLabel, Image, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import axios from "axios";
 
-import DahboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import SpinnerLoading from "@/components/loading/SpinnerLoading";
 import { Rupiah } from "@/utils/price";
 
@@ -241,7 +241,7 @@ const ThumbnailProduct = ({ data }: { data: any }) => {
   )
 }
 
-export default function DashboardPage() {
+export default function DetailProductsPage() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -249,10 +249,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!id) {
-      router.push('/dashboard/products');
-    }
-
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -285,7 +281,7 @@ export default function DashboardPage() {
         <title>Sales App | Dashboard</title>
       </Head>
 
-      <DahboardLayout>
+      <DashboardLayout>
         <Stack as="section" spacing={8}>
           <BreadCrumb id={id as string} />
 
@@ -295,7 +291,7 @@ export default function DashboardPage() {
             <PriceProducts data={data} />
           </Flex>
         </Stack>
-      </DahboardLayout>
+      </DashboardLayout>
     </>
   )
 }

@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { useRouter } from "next/router";
 import { Box, Flex, Icon, Image, Stack, Text } from "@chakra-ui/react";
 import { BiSolidHome, BiSolidInfoCircle } from "react-icons/bi";
@@ -7,7 +8,7 @@ import { BsDatabaseFillAdd } from "react-icons/bs";
 import { RiFileEditFill, RiUserSettingsFill } from "react-icons/ri";
 import { FaQuestionCircle } from "react-icons/fa";
 import { PiComputerTowerBold } from 'react-icons/pi';
-import { FC } from "react";
+import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 
 const linksDashboardGroup = [
   { href: '/dashboard', label: 'Dashboard Overview', icon: BiSolidHome },
@@ -29,6 +30,11 @@ const linksSettingsGroup = [
 const linkCashierGroup = [
   { href: '/dashboard/cashier', label: 'Cashier', icon: PiComputerTowerBold }
 ]
+
+const linkUsersGroup = [
+  { href: '/dashboard/users', label: 'View Users', icon: AiOutlineUser },
+  { href: '/dashboard/users/add', label: 'Add Users', icon: AiOutlineUserAdd }
+];
 
 const SidebarLink: FC<{ href: string, label: string, icon: any }> = ({ href, label, icon }) => {
   const router = useRouter();
@@ -83,6 +89,17 @@ export default function Sidebar({ isOpen, ...rest }: { isOpen: boolean, [x: stri
           </Text>
           <Stack spacing={1}>
             {linksProductsGroup.map((link, index) => (
+              <SidebarLink key={index} href={link.href} icon={link.icon} label={link.label} />
+            ))}
+          </Stack>
+        </Stack>
+
+        <Stack>
+          <Text fontSize={'xs'} textTransform={'uppercase'} color={'gray.500'} fontWeight={'medium'}>
+            Users
+          </Text>
+          <Stack spacing={1}>
+            {linkUsersGroup.map((link, index) => (
               <SidebarLink key={index} href={link.href} icon={link.icon} label={link.label} />
             ))}
           </Stack>

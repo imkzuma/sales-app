@@ -1,5 +1,5 @@
 import Head from "next/head";
-import DahboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { Button, Divider, Flex, FormControl, FormLabel, Input, NumberInput, NumberInputField, Select, Stack, Textarea, useNumberInput, useToast } from "@chakra-ui/react";
 import { BsDatabaseFillAdd } from "react-icons/bs";
@@ -124,14 +124,14 @@ const FormInput = () => {
   )
 }
 
-export default function DashboardPage() {
+export default function AddProductsPage() {
   return (
     <>
       <Head>
         <title>Sales App | Dashboard</title>
       </Head>
 
-      <DahboardLayout>
+      <DashboardLayout>
         <Stack as="section" spacing={8}>
           <DashboardHeader
             icon={BsDatabaseFillAdd}
@@ -141,7 +141,7 @@ export default function DashboardPage() {
           <Divider />
           <FormInput />
         </Stack>
-      </DahboardLayout>
+      </DashboardLayout>
     </>
   )
 }

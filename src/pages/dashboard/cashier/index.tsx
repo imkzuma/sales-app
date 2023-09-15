@@ -1,13 +1,13 @@
 import Head from "next/head";
 import { useRef, useState } from "react";
-import { Box, Button, Flex, FormControl, FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberInput, NumberInputField, Stack, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import axios from "axios";
+import { Box, Button, Flex, FormControl, FormLabel, Image, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberInput, NumberInputField, Stack, Td, Text, Th, Tr, useDisclosure, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
-import DahboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { DashboardSubHeader } from "@/components/dashboard/header";
-import axios from "axios";
 import { Rupiah } from "@/utils/price";
-import TableNoPagination from "@/components/table/NoPagination";
+import TableComponent from "@/components/table";
 
 const ManageProducts = () => {
   return (
@@ -149,7 +149,7 @@ const Payment = ({ isOpen, onClose, setProducts, total, setTotal, finalRef }: an
       finalFocusRef={finalRef}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent borderRadius={'xl'}>
         <ModalHeader>
           Payment
         </ModalHeader>
@@ -237,7 +237,7 @@ export default function CashierPage() {
         finalRef={finalRef}
       />
 
-      <DahboardLayout>
+      <DashboardLayout>
         <ManageProducts />
         <SearchProducts
           products={products}
@@ -254,10 +254,37 @@ export default function CashierPage() {
           <Box
             flex={1}
           >
-            <TableNoPagination
-              data={products}
+            <TableComponent
               header={['Image', 'Product', 'Price', 'Qty']}
-            />
+              pagination={false}
+            >
+              {products === null && (
+                <Tr>
+                  <Th py={10} colSpan={5} textAlign={'center'}>
+                    No Data
+                  </Th>
+                </Tr>
+              )}
+              {products?.map((product: any, index: number) => {
+                return (
+                  <Tr key={index}>
+                    <Td
+                      w={'70px'} maxW={'70px'} minW={'70px'}
+                      h={'70px'} maxH={'70px'} minH={'70px'}
+                    >
+                      <Image
+                        src={product?.thumbnail}
+                        alt={product?.name}
+                        objectFit={'cover'}
+                      />
+                    </Td>
+                    <Td>{product?.title}</Td>
+                    <Td>{Rupiah.format(product?.price * 15000)}</Td>
+                    <Td>{product?.qty}</Td>
+                  </Tr>
+                )
+              })}
+            </TableComponent>
           </Box>
           <Box
             pos={'sticky'}
@@ -295,7 +322,7 @@ export default function CashierPage() {
             </Flex>
           </Box>
         </Flex>
-      </DahboardLayout>
+      </DashboardLayout>
     </>
   )
 }

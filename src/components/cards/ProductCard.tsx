@@ -38,6 +38,7 @@ export default function ProductCard({ title, description, data }: ProductCardPro
             pb={3}
             cursor={'pointer'}
             onClick={() => handleProductView(product?.id)}
+            display={{ base: 'block', md: 'flex' }}
           >
             <Box
               minW={'200px'} maxW={'200px'}

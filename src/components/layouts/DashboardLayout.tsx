@@ -3,7 +3,7 @@ import Sidebar from "@/components/sidebar";
 import { ReactNode, useState } from "react";
 import DashboardNavbar from "@/components/navbar/DashboardNavbar";
 
-export default function DahboardLayout({ children }: { children: ReactNode }) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const onClose = () => setIsOpen(false);
@@ -25,7 +25,7 @@ export default function DahboardLayout({ children }: { children: ReactNode }) {
       >
         <Container
           maxW={'8xl'}
-          p={{ md: 0 }}
+          px={{ md: 0, lg: 5 }}
         >
           <DashboardNavbar
             isOpen={isOpen}
@@ -37,13 +37,14 @@ export default function DahboardLayout({ children }: { children: ReactNode }) {
 
       <Container
         maxW={'8xl'}
-        p={{ md: 0 }}
+        px={{ md: 0, lg: 5 }}
       >
         <Flex w={'full'} py={5} gap={10}>
           <Sidebar
             w={isOpen ? '16rem' : 0}
             transition="width 0.6s"
             isOpen={isOpen}
+            display={{ base: 'none', lg: 'block' }}
           />
           <Box as="section"
             w={'full'}

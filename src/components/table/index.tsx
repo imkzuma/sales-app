@@ -1,34 +1,30 @@
-import { Badge, Button, Flex, Image, Stack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { Button, Flex, Table, TableContainer, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { ReactNode } from "react";
 
 interface TableComponentProps {
   header: string[];
-  data: any;
-  page: number;
-  setPage: any;
+  page?: number;
+  setPage?: any;
+  pagination: boolean;
+  children: ReactNode;
 };
 
-export default function TableComponent({ header, data, page, setPage }: TableComponentProps) {
-  const router = useRouter();
-
-  const handleViewProduct = async (id: number) => {
-    router.push({
-      pathname: '/dashboard/products/[id]',
-      query: { id }
-    })
-  }
-
+export default function TableComponent({ header, page, setPage, pagination, children }: TableComponentProps) {
   const handlePrevPage = () => {
-    if (page < 10) {
-      setPage(0)
-    }
-    else {
-      setPage(page - 10)
+    if (page !== undefined && setPage !== undefined) {
+      if (page < 10) {
+        setPage(0)
+      }
+      else {
+        setPage(page - 10)
+      }
     }
   }
 
   const handleNextPage = () => {
-    setPage(page + 10)
+    if (setPage !== undefined) {
+      setPage((prevPage: number) => (prevPage ?? 0) + 10);
+    }
   }
 
   return (
@@ -42,41 +38,10 @@ export default function TableComponent({ header, data, page, setPage }: TableCom
           </Tr>
         </Thead>
         <Tbody>
-          {data === null && (
-            <Tr>
-              <Th py={10} colSpan={5} textAlign={'center'}>
-                No Data
-              </Th>
-            </Tr>
-          )}
-          {data?.map((product: any, index: number) => {
-            return (
-              <Tr key={index} cursor={'pointer'} onClick={() => handleViewProduct(product?.id)}>
-                <Td
-                  w={'100px'} maxW={'100px'} minW={'100px'}
-                  h={'100px'} maxH={'100px'} minH={'100px'}
-                >
-                  <Image
-                    src={product?.thumbnail}
-                    alt={product?.name}
-                    objectFit={'cover'}
-                  />
-                </Td>
-                <Td>{product?.title}</Td>
-                <Td>{product?.brand}</Td>
-                <Td>{product?.stock}</Td>
-                <Td>${product?.price}</Td>
-                <Td>
-                  <Badge colorScheme="yellow">
-                    {product?.rating}
-                  </Badge>
-                </Td>
-              </Tr>
-            )
-          })}
+          {children}
         </Tbody>
       </Table>
-      {data && (
+      {pagination && page !== undefined && (
         <Flex justify={'space-between'} align={'center'} py={5}>
           <Text>
             Showing {page + 1} to {page + 10}

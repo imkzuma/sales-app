@@ -170,22 +170,22 @@ export default function DashboardNavbar({ isOpen, onClose, onOpen }: { isOpen: b
     <Flex as="nav"
       justify={'space-between'}
       align={'center'}
+      px={{ base: 2, lg: 0 }}
     >
       <Flex as="header"
         align={'center'}
-        gap={3}
         py={4}
-        px={{ md: 4, lg: 5, xl: 0 }}
+        px={0}
       >
         <Button
-          display={{ base: 'block', md: 'none' }}
+          display={{ base: 'block', lg: 'none' }}
           onClick={isOpen ? onClose : onOpen}
-          variant={'ghost'}
+          variant={'unstyled'}
         >
           <HamburgerIcon />
         </Button>
         <Box
-          w={36}
+          w={{ base: 24, lg: 36 }}
         >
           <Image
             src="https://magnumsolusion.co.id/img/logo%202021.svg"
@@ -198,6 +198,7 @@ export default function DashboardNavbar({ isOpen, onClose, onOpen }: { isOpen: b
       <Flex as="section"
         gap={7}
         align={'center'}
+        pe={2}
       >
         <Notification />
         <NavbarAvatar />
