@@ -1,13 +1,22 @@
-import { useRouter } from "next/router";
-import { useEffect } from 'react';
+import HomeHero from "@/components/home/hero";
+import SectionTopSell from "@/components/home/section/TopSell";
+import MainLayout from "@/components/layouts/MainLayout";
+import { Box } from "@chakra-ui/react";
+import Head from "next/head";
 
 export default function Home() {
-  const router = useRouter();
+  return (
+    <>
+      <Head>
+        <title>Sales App | Home</title>
+      </Head>
 
-  useEffect(() => {
-    router.replace("/dashboard");
-
-  }, [router]);
-
-  return;
+      <MainLayout>
+        <Box py={8}>
+          <HomeHero />
+        </Box>
+        <SectionTopSell />
+      </MainLayout>
+    </>
+  )
 }
